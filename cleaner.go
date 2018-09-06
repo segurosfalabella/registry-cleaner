@@ -19,6 +19,8 @@ func main() {
 
 //CleanRegistry function
 func CleanRegistry(repository string, tags []string) error {
+	log.Println("clean registry")
+
 	if repository == "" {
 		return errors.New("repository is needed!")
 	}
@@ -27,11 +29,13 @@ func CleanRegistry(repository string, tags []string) error {
 		return errors.New("tags are needed!")
 	}
 
-	//getTags(repo)
+	log.Println("call get tags")
+	getTags(repository, tags)
 	return nil
 }
 
-func getTags(repo string) {
+func getTags(repository string, tags []string) {
+	log.Println("get tags")
 	var resp []string
 	out, err := exec.Command(
 		"az",
@@ -41,23 +45,30 @@ func getTags(repo string) {
 		"-n",
 		"segurosfalabella",
 		"--repository",
-		repo).Output()
+		repository).Output()
 
+	log.Println("waiting for response")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err := json.Unmarshal([]byte(out), &resp); err != nil {
-		panic(err)
+	errMarshall := json.Unmarshal([]byte(out), &resp)
+
+	if errMarshall != nil {
+		panic(errMarshall)
 	}
 
+	log.Println("iterate")
 	for _, tag := range resp {
-		deleteUnusedTags(tag, repo)
+		if !in_array(tag, tags) && !strings.Contains(tag, "c-") {
+			log.Println("going to delete " + tag)
+			deleteUnusedTags(tag, repository)
+		}
+
 	}
 }
 
-// deletes everything but latest tag
-func deleteUnusedTags(tag string, repo string) {
+func deleteUnusedTags(tag string, repository string) {
 	if !strings.Contains(tag, "latest") {
 		cmd := exec.Command(
 			"az",
@@ -67,8 +78,10 @@ func deleteUnusedTags(tag string, repo string) {
 			"-n",
 			"segurosfalabella",
 			"--image",
-			repo+":"+tag,
+			repository+":"+tag,
 			"--yes")
+
+		log.Println("deleting " + tag)
 
 		err := cmd.Run()
 		if err != nil {
@@ -77,53 +90,61 @@ func deleteUnusedTags(tag string, repo string) {
 	}
 }
 
-// use the following to delete nil tags from manifest
-func getManifests(repo string) {
-	var resp []interface{}
-	out, err := exec.Command(
-		"az",
-		"acr",
-		"repository",
-		"show-manifests",
-		"-n",
-		"segurosfalabella",
-		"--repository",
-		repo,
-	).Output()
+// func getManifests(repository string) {
+// 	var resp []interface{}
+// 	out, err := exec.Command(
+// 		"az",
+// 		"acr",
+// 		"repository",
+// 		"show-manifests",
+// 		"-n",
+// 		"segurosfalabella",
+// 		"--repository",
+// 		repository,
+// 	).Output()
 
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	if err := json.Unmarshal([]byte(out), &resp); err != nil {
-		panic(err)
-	}
+// 	if err := json.Unmarshal([]byte(out), &resp); err != nil {
+// 		panic(err)
+// 	}
 
-	for _, m := range resp {
-		tag := m.(map[string]interface{})["tags"]
-		digest := m.(map[string]interface{})["digest"].(string)
-		if tag == nil {
-			// fmt.Println(m.(map[string]interface{})["digest"])
-			deleteNilTags(repo, digest)
+// 	for _, m := range resp {
+// 		tag := m.(map[string]interface{})["tags"]
+// 		digest := m.(map[string]interface{})["digest"].(string)
+// 		if tag == nil {
+// 			// fmt.Println(m.(map[string]interface{})["digest"])
+// 			deleteNilTags(repository, digest)
+// 		}
+// 	}
+// }
+
+// func deleteNilTags(repository string, digest string) {
+// 	image := (repository + "@" + digest)
+// 	cmd := exec.Command(
+// 		"az",
+// 		"acr",
+// 		"repository",
+// 		"delete",
+// 		"-n",
+// 		"segurosfalabella",
+// 		"--image",
+// 		image,
+// 		"-y",
+// 	)
+// 	err := cmd.Run()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// }
+
+func in_array(val string, array []string) bool {
+	for pos := 0; pos < len(array); pos++ {
+		if array[pos] == val {
+			return true
 		}
 	}
-}
-
-func deleteNilTags(repo string, digest string) {
-	image := (repo + "@" + digest)
-	cmd := exec.Command(
-		"az",
-		"acr",
-		"repository",
-		"delete",
-		"-n",
-		"segurosfalabella",
-		"--image",
-		image,
-		"-y",
-	)
-	err := cmd.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
+	return false
 }
