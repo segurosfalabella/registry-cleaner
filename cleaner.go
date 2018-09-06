@@ -4,28 +4,22 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
-	"fmt"
 	"log"
 	"os/exec"
 	"strings"
 )
 
 func main() {
-	//flag.StringVar(&repo, "repo", "", "The Azure Cloud Registry repository")
+	var repository string
+	flag.StringVar(&repository, "repository", "", "The Azure Cloud Registry repository")
 	flag.Parse()
 	args := flag.Args()
-	fmt.Println("repository:", repo)
-	fmt.Println("arguments: ", args)
-
-	for index := 0; index < len(args); index++ {
-		fmt.Println(args[index])
-	}
-	///CleanRegistry()
+	CleanRegistry(repository, args)
 }
 
 //CleanRegistry function
-func CleanRegistry(repo string, tags []string) error {
-	if repo == "" {
+func CleanRegistry(repository string, tags []string) error {
+	if repository == "" {
 		return errors.New("repository is needed!")
 	}
 

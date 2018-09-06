@@ -6,23 +6,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var repo string
+var repository string
 var tags []string
 
 func TestShoulReturnErrorIfDoesNotdHaveARepo(t *testing.T) {
-	repo = ""
+	repository = ""
 	tags = []string{}
 
-	err := CleanRegistry(repo, tags)
+	err := CleanRegistry(repository, tags)
 
 	assert.NotNil(t, err)
 }
 
 func TestShouldReturnErrorIfDoesNotHaveTagsAsArguments(t *testing.T) {
-	repo = "repo"
+	repository = "repo"
 	tags = []string{}
 
-	err := CleanRegistry(repo, tags)
+	err := CleanRegistry(repository, tags)
 
 	assert.NotNil(t, err)
 }
