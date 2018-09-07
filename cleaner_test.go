@@ -130,3 +130,40 @@ func TestShouldReturnErrorIfGetErrorFromUnmarshal(t *testing.T) {
 
 	assert.NotNil(t, err, "should return error if json unmarshal got wrong")
 }
+
+func TestShouldReturnNilWhenDeletedUnusedTagsWorks(t *testing.T) {
+	repository = "demo"
+	tags = []string{
+		"demo3",
+	}
+
+	oldExecuteCommandFunction := ExecuteCommandFunction
+	oldUnmarshalFunction := UnmarshalFunction
+	oldDeleteUnusedTags := DeleteUnusedTags
+	defer func() {
+		ExecuteCommandFunction = oldExecuteCommandFunction
+		UnmarshalFunction = oldUnmarshalFunction
+		DeleteUnusedTags = oldDeleteUnusedTags
+	}()
+
+	ExecuteCommandFunction = func(params ...string) ([]byte, error) {
+		out := []string{
+			"demo1",
+			"demo2",
+		}
+		bytes, _ := json.Marshal(out)
+		return bytes, nil
+	}
+
+	UnmarshalFunction = func(bytes []byte, response interface{}) error {
+		return nil
+	}
+
+	DeleteUnusedTags = func(tag string, repository string) {
+
+	}
+
+	err := getTags(repository, tags)
+
+	assert.Nil(t, err, "should return nil when got fine")
+}

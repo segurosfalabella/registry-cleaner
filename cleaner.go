@@ -62,14 +62,15 @@ func getTags(repository string, tags []string) error {
 	for _, tag := range response {
 		if !inArray(tag, tags) && !strings.Contains(tag, "c-") {
 			log.Println("going to delete " + tag)
-			deleteUnusedTags(tag, repository)
+			DeleteUnusedTags(tag, repository)
 		}
 	}
 
 	return nil
 }
 
-func deleteUnusedTags(tag string, repository string) {
+//DeleteUnusedTags var function
+var DeleteUnusedTags = func(tag string, repository string) {
 	if !strings.Contains(tag, "latest") {
 		cmd := exec.Command(
 			"az",
