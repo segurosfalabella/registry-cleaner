@@ -28,18 +28,34 @@ func TestShouldReturnErrorIfDoesNotHaveTagsAsArguments(t *testing.T) {
 }
 
 func TestShouldReturnTrueWhenValueExistsInArray(t *testing.T) {
-	var tag string = "b-1"
+	tag := "b-1"
 	tags = []string{"b-1", "b-2"}
 
-	result := in_array(tag, tags)
+	result := inArray(tag, tags)
 
-	assert.True(t, result, "should return true if value is in array")
+	assert.True(t, result, "Should return true if value is in array")
 }
 func TestShouldReturnFalseWhenValueDoesNotExistInArray(t *testing.T) {
-	var tag string = "b-3"
+	tag := "b-3"
 	tags = []string{"b-1", "b-2"}
 
-	result := in_array(tag, tags)
+	result := inArray(tag, tags)
 
-	assert.False(t, result, "should return false if value is not in array")
+	assert.False(t, result, "Should return false if value is not in array")
+}
+
+func TestShouldReturnErrorIfThereAreNotParameters(t *testing.T) {
+	params := []string{}
+
+	_, err := executeCommand(params...)
+
+	assert.NotNil(t, err, "should return error if function is called without parameters")
+}
+
+func TestShouldReturnErrorNilIfThereAreParameters(t *testing.T) {
+	params := []string{"env"}
+
+	_, err := executeCommand(params...)
+
+	assert.Nil(t, err, "should return nil if function has parameters")
 }

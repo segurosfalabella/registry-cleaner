@@ -22,11 +22,11 @@ func CleanRegistry(repository string, tags []string) error {
 	log.Println("clean registry")
 
 	if repository == "" {
-		return errors.New("repository is needed!")
+		return errors.New("Repository is needed")
 	}
 
 	if len(tags) == 0 {
-		return errors.New("tags are needed!")
+		return errors.New("Tags are needed")
 	}
 
 	log.Println("call get tags")
@@ -60,7 +60,7 @@ func getTags(repository string, tags []string) {
 
 	log.Println("iterate")
 	for _, tag := range resp {
-		if !in_array(tag, tags) && !strings.Contains(tag, "c-") {
+		if !inArray(tag, tags) && !strings.Contains(tag, "c-") {
 			log.Println("going to delete " + tag)
 			deleteUnusedTags(tag, repository)
 		}
@@ -89,13 +89,30 @@ func deleteUnusedTags(tag string, repository string) {
 	}
 }
 
-func in_array(val string, array []string) bool {
+func inArray(val string, array []string) bool {
 	for pos := 0; pos < len(array); pos++ {
 		if array[pos] == val {
 			return true
 		}
 	}
 	return false
+}
+
+func executeCommand(params ...string) ([]byte, error) {
+	if len(params) == 0 {
+		return nil, errors.New("Parameters are needed")
+	}
+
+	param := params[0]
+	rest := append(params[:0], params[0+1:]...)
+
+	out, err := exec.Command(param, rest...).Output()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return out, err
 }
 
 // func getManifests(repository string) {
