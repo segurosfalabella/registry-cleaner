@@ -26,3 +26,20 @@ func TestShouldReturnErrorIfDoesNotHaveTagsAsArguments(t *testing.T) {
 
 	assert.NotNil(t, err)
 }
+
+func TestShouldReturnTrueWhenValueExistsInArray(t *testing.T) {
+	var tag string = "b-1"
+	tags = []string{"b-1", "b-2"}
+
+	result := in_array(tag, tags)
+
+	assert.True(t, result, "should return true if value is in array")
+}
+func TestShouldReturnFalseWhenValueDoesNotExistInArray(t *testing.T) {
+	var tag string = "b-3"
+	tags = []string{"b-1", "b-2"}
+
+	result := in_array(tag, tags)
+
+	assert.False(t, result, "should return false if value is not in array")
+}

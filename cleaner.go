@@ -64,7 +64,6 @@ func getTags(repository string, tags []string) {
 			log.Println("going to delete " + tag)
 			deleteUnusedTags(tag, repository)
 		}
-
 	}
 }
 
@@ -88,6 +87,15 @@ func deleteUnusedTags(tag string, repository string) {
 			log.Fatal(err)
 		}
 	}
+}
+
+func in_array(val string, array []string) bool {
+	for pos := 0; pos < len(array); pos++ {
+		if array[pos] == val {
+			return true
+		}
+	}
+	return false
 }
 
 // func getManifests(repository string) {
@@ -139,12 +147,3 @@ func deleteUnusedTags(tag string, repository string) {
 // 		log.Fatal(err)
 // 	}
 // }
-
-func in_array(val string, array []string) bool {
-	for pos := 0; pos < len(array); pos++ {
-		if array[pos] == val {
-			return true
-		}
-	}
-	return false
-}
