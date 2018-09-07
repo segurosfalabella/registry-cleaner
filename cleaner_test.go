@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"testing"
 
@@ -76,4 +77,25 @@ func TestShouldReturnErrorIfExecuteCommandFunctionGoesWrong(t *testing.T) {
 	err := getTags(repository, tags)
 
 	assert.NotNil(t, err, "should return error if execute command goes wrong")
+}
+
+func TestShouldReturnErrorIfOutIsBad(t *testing.T) {
+	var response []string
+	//s = make([]byte, 5, 5)
+
+	err := UnmarshalFunction(nil, &response)
+
+	assert.NotNil(t, err, "should return error if unmarshall goes wrong")
+}
+
+func TestShouldReturnNilIfOutIsGood(t *testing.T) {
+	var response []string
+	out := []string{
+		"demo1",
+	}
+	bytes, _ := json.Marshal(out)
+
+	err := UnmarshalFunction(bytes, &response)
+
+	assert.Nil(t, err, "should return nil if unmarshall goes fine")
 }

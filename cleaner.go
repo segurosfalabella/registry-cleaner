@@ -119,6 +119,18 @@ var ExecuteCommandFunction = func(params ...string) ([]byte, error) {
 	return out, err
 }
 
+//UnmarshalFunction var function
+var UnmarshalFunction = func(out []byte, response interface{}) error {
+	err := json.Unmarshal(out, response)
+
+	log.Println("unmarshaling out")
+	if err != nil {
+		return errors.New("something goes wrong running json unmarshal")
+	}
+
+	return nil
+}
+
 // func getManifests(repository string) {
 // 	var resp []interface{}
 // 	out, err := exec.Command(
