@@ -99,3 +99,34 @@ func TestShouldReturnNilIfOutIsGood(t *testing.T) {
 
 	assert.Nil(t, err, "should return nil if unmarshall goes fine")
 }
+
+func TestShouldReturnErrorIfGetErrorFromUnmarshal(t *testing.T) {
+	repository = "demo"
+	tags = []string{
+		"demo3",
+	}
+
+	oldExecuteCommandFunction := ExecuteCommandFunction
+	oldUnmarshalFunction := UnmarshalFunction
+	defer func() {
+		ExecuteCommandFunction = oldExecuteCommandFunction
+		UnmarshalFunction = oldUnmarshalFunction
+	}()
+
+	ExecuteCommandFunction = func(params ...string) ([]byte, error) {
+		out := []string{
+			"demo1",
+			"demo2",
+		}
+		bytes, _ := json.Marshal(out)
+		return bytes, nil
+	}
+
+	UnmarshalFunction = func(bytes []byte, response interface{}) error {
+		return errors.New("something got wrong with json marshal")
+	}
+
+	err := getTags(repository, tags)
+
+	assert.NotNil(t, err, "should return error if json unmarshal got wrong")
+}

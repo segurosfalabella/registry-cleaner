@@ -51,15 +51,15 @@ func getTags(repository string, tags []string) error {
 		return errors.New("Error returned from execute command function")
 	}
 
-	var resp []string
-	errMarshall := json.Unmarshal([]byte(out), &resp)
+	var response []string
+	errMarshall := UnmarshalFunction([]byte(out), &response)
 
 	if errMarshall != nil {
-		panic(errMarshall)
+		return errMarshall
 	}
 
 	log.Println("iterate")
-	for _, tag := range resp {
+	for _, tag := range response {
 		if !inArray(tag, tags) && !strings.Contains(tag, "c-") {
 			log.Println("going to delete " + tag)
 			deleteUnusedTags(tag, repository)
