@@ -36,8 +36,7 @@ func CleanRegistry(repository string, tags []string) error {
 
 func getTags(repository string, tags []string) {
 	log.Println("get tags")
-	var resp []string
-	out, err := exec.Command(
+	out, err := ExecuteCommandFunction(
 		"az",
 		"acr",
 		"repository",
@@ -45,13 +44,13 @@ func getTags(repository string, tags []string) {
 		"-n",
 		"segurosfalabella",
 		"--repository",
-		repository).Output()
+		repository)
 
-	log.Println("waiting for response")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	var resp []string
 	errMarshall := json.Unmarshal([]byte(out), &resp)
 
 	if errMarshall != nil {
@@ -98,15 +97,17 @@ func inArray(val string, array []string) bool {
 	return false
 }
 
-func executeCommand(params ...string) ([]byte, error) {
+//ExecuteCommandFunction function var
+var ExecuteCommandFunction = func(params ...string) ([]byte, error) {
 	if len(params) == 0 {
 		return nil, errors.New("Parameters are needed")
 	}
 
 	param := params[0]
 	rest := append(params[:0], params[0+1:]...)
-
+	log.Println("executing command")
 	out, err := exec.Command(param, rest...).Output()
+	log.Println("waiting for response")
 
 	if err != nil {
 		log.Fatal(err)

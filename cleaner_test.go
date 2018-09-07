@@ -47,7 +47,7 @@ func TestShouldReturnFalseWhenValueDoesNotExistInArray(t *testing.T) {
 func TestShouldReturnErrorIfThereAreNotParameters(t *testing.T) {
 	params := []string{}
 
-	_, err := executeCommand(params...)
+	_, err := ExecuteCommandFunction(params...)
 
 	assert.NotNil(t, err, "should return error if function is called without parameters")
 }
@@ -55,7 +55,7 @@ func TestShouldReturnErrorIfThereAreNotParameters(t *testing.T) {
 func TestShouldReturnErrorNilIfThereAreParameters(t *testing.T) {
 	params := []string{"env"}
 
-	_, err := executeCommand(params...)
+	_, err := ExecuteCommandFunction(params...)
 
 	assert.Nil(t, err, "should return nil if function has parameters")
 }
