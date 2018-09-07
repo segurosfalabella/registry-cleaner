@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -58,4 +59,21 @@ func TestShouldReturnErrorNilIfThereAreParameters(t *testing.T) {
 	_, err := ExecuteCommandFunction(params...)
 
 	assert.Nil(t, err, "should return nil if function has parameters")
+}
+
+func TestShouldReturnErrorIfExecuteCommandFunctionGoesWrong(t *testing.T) {
+	repository = "demo"
+	tags = []string{"demo1", "demo2"}
+
+	oldExecuteCommandFunction := ExecuteCommandFunction
+	defer func() {
+		ExecuteCommandFunction = oldExecuteCommandFunction
+	}()
+	ExecuteCommandFunction = func(params ...string) ([]byte, error) {
+		return nil, errors.New("Something goes wrong executing command")
+	}
+
+	err := getTags(repository, tags)
+
+	assert.NotNil(t, err, "should return error if execute command goes wrong")
 }

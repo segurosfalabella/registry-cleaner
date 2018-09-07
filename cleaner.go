@@ -30,11 +30,12 @@ func CleanRegistry(repository string, tags []string) error {
 	}
 
 	log.Println("call get tags")
-	getTags(repository, tags)
+	err := getTags(repository, tags)
+	log.Println("returned error: " + err.Error())
 	return nil
 }
 
-func getTags(repository string, tags []string) {
+func getTags(repository string, tags []string) error {
 	log.Println("get tags")
 	out, err := ExecuteCommandFunction(
 		"az",
@@ -47,7 +48,7 @@ func getTags(repository string, tags []string) {
 		repository)
 
 	if err != nil {
-		log.Fatal(err)
+		return errors.New("Error returned from execute command function")
 	}
 
 	var resp []string
@@ -64,6 +65,8 @@ func getTags(repository string, tags []string) {
 			deleteUnusedTags(tag, repository)
 		}
 	}
+
+	return nil
 }
 
 func deleteUnusedTags(tag string, repository string) {
