@@ -2,9 +2,10 @@ pipeline:
   test:
     image: library/golang:1.11-alpine
     commands:
+    - apk add git
     - go version
     - go get -d ./...
-    - go get github.com/stretchr/testify/assert
+    #- go get github.com/stretchr/testify/assert
     - go test -v ./...
     - ls
     - ls /go/bin/
