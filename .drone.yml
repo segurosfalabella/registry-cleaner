@@ -4,6 +4,7 @@ pipeline:
     commands:
     - go version
     - go get -d ./...
+    - go get github.com/stretchr/testify/assert
     - go test -v ./...
     - ls
     - ls /go/bin/
