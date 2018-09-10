@@ -66,7 +66,7 @@ var GetTags = func(repository string, tags []string) error {
 	log.Println("iterate")
 	for _, tag := range response {
 		if !inArray(tag, tags) && !strings.Contains(tag, "c-") {
-			log.Println("going to delete " + tag)
+			log.Println("going to delete " + tag + "\xE2\x9C\x94")
 			DeleteUnusedTags(tag, repository)
 		}
 	}
@@ -88,7 +88,7 @@ var DeleteUnusedTags = func(tag string, repository string) {
 			repository+":"+tag,
 			"--yes")
 
-		log.Println("deleting " + tag)
+		log.Println("deleting " + tag + "\xE2\x9C\x94 \xE2\x9C\x94")
 
 		//err := cmd.Run()
 		if err != nil {
