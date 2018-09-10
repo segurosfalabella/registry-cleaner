@@ -4,5 +4,6 @@ pipeline:
     commands:
     - go version
     - go get -d ./...
+    - ls
     - ls /go/bin/
     - ls /go/src/
