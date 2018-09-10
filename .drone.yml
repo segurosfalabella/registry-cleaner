@@ -3,4 +3,4 @@ pipeline:
     image: library/golang:1.11-alpine
     commands:
     - go version
-    - env
+    - go get -d ./...
