@@ -1,6 +1,6 @@
 pipeline:
   test:
-  image: 1.11-alpine
+  image: go:1.11-alpine
   commands:
   - go get ./...
   - GO_FILES=$(find . -iname '*.go' -type f | grep -v /godogs/ | tr "\n" " ")
