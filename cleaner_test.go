@@ -138,11 +138,9 @@ func TestShouldReturnNilWhenDeletedUnusedTagsWorks(t *testing.T) {
 	}
 
 	oldExecuteCommandFunction := ExecuteCommandFunction
-	oldUnmarshalFunction := UnmarshalFunction
 	oldDeleteUnusedTags := DeleteUnusedTags
 	defer func() {
 		ExecuteCommandFunction = oldExecuteCommandFunction
-		UnmarshalFunction = oldUnmarshalFunction
 		DeleteUnusedTags = oldDeleteUnusedTags
 	}()
 
