@@ -181,19 +181,18 @@ func TestShouldReturnNilWhenCleanRegistryRan(t *testing.T) {
 	assert.Nil(t, err, "should return nil when run clean registry got fine")
 }
 
-// func TestShouldReturnLogErrorIfDExecuteCommandFail(t *testing.T) {
-// 	tag := "demo-1"
-// 	repository := "demo"
+func TestShouldReturnLogErrorIfDExecuteCommandFail(t *testing.T) {
+	tag := "demo-1"
+	repository := "demo"
 
-// 	oldExecuteCommandFunction := ExecuteCommandFunction
-// 	defer func() {
-// 		ExecuteCommandFunction = oldExecuteCommandFunction
-// 	}()
+	oldExecuteCommandFunction := ExecuteCommandFunction
+	defer func() {
+		ExecuteCommandFunction = oldExecuteCommandFunction
+	}()
 
-// 	ExecuteCommandFunction = func(params ...string) ([]byte, error) {
-// 		return nil, errors.New("something got wrong executing command")
-// 	}
+	ExecuteCommandFunction = func(params ...string) ([]byte, error) {
+		return nil, errors.New("something got wrong executing command")
+	}
 
-// 	DeleteUnusedTags(tag, repository)
-// 	assert.Equal(t, "something got wrong executing command", t.Fatal)
-// }
+	assert.Panics(t, func() { DeleteUnusedTags(tag, repository) }, "should generate panic")
+}

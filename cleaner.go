@@ -92,7 +92,7 @@ var DeleteUnusedTags = func(tag string, repository string) {
 
 		//err := cmd.Run()
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 	}
 }
