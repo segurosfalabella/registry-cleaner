@@ -30,12 +30,17 @@ func CleanRegistry(repository string, tags []string) error {
 	}
 
 	log.Println("call get tags")
-	err := getTags(repository, tags)
-	log.Println("returned error: " + err.Error())
+	err := GetTags(repository, tags)
+
+	if err != nil {
+		log.Println("returned error: " + err.Error())
+	}
+
 	return nil
 }
 
-func getTags(repository string, tags []string) error {
+//GetTags var func
+var GetTags = func(repository string, tags []string) error {
 	log.Println("get tags")
 	out, err := ExecuteCommandFunction(
 		"az",
@@ -72,7 +77,7 @@ func getTags(repository string, tags []string) error {
 //DeleteUnusedTags var function
 var DeleteUnusedTags = func(tag string, repository string) {
 	if !strings.Contains(tag, "latest") {
-		cmd := exec.Command(
+		_, err := ExecuteCommandFunction(
 			"az",
 			"acr",
 			"repository",
@@ -85,7 +90,7 @@ var DeleteUnusedTags = func(tag string, repository string) {
 
 		log.Println("deleting " + tag)
 
-		err := cmd.Run()
+		//err := cmd.Run()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -131,53 +136,3 @@ var UnmarshalFunction = func(out []byte, response interface{}) error {
 
 	return nil
 }
-
-// func getManifests(repository string) {
-// 	var resp []interface{}
-// 	out, err := exec.Command(
-// 		"az",
-// 		"acr",
-// 		"repository",
-// 		"show-manifests",
-// 		"-n",
-// 		"segurosfalabella",
-// 		"--repository",
-// 		repository,
-// 	).Output()
-
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	if err := json.Unmarshal([]byte(out), &resp); err != nil {
-// 		panic(err)
-// 	}
-
-// 	for _, m := range resp {
-// 		tag := m.(map[string]interface{})["tags"]
-// 		digest := m.(map[string]interface{})["digest"].(string)
-// 		if tag == nil {
-// 			// fmt.Println(m.(map[string]interface{})["digest"])
-// 			deleteNilTags(repository, digest)
-// 		}
-// 	}
-// }
-
-// func deleteNilTags(repository string, digest string) {
-// 	image := (repository + "@" + digest)
-// 	cmd := exec.Command(
-// 		"az",
-// 		"acr",
-// 		"repository",
-// 		"delete",
-// 		"-n",
-// 		"segurosfalabella",
-// 		"--image",
-// 		image,
-// 		"-y",
-// 	)
-// 	err := cmd.Run()
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// }

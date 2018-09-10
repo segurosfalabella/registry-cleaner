@@ -74,7 +74,7 @@ func TestShouldReturnErrorIfExecuteCommandFunctionGoesWrong(t *testing.T) {
 		return nil, errors.New("Something goes wrong executing command")
 	}
 
-	err := getTags(repository, tags)
+	err := GetTags(repository, tags)
 
 	assert.NotNil(t, err, "should return error if execute command goes wrong")
 }
@@ -126,7 +126,7 @@ func TestShouldReturnErrorIfGetErrorFromUnmarshal(t *testing.T) {
 		return errors.New("something got wrong with json marshal")
 	}
 
-	err := getTags(repository, tags)
+	err := GetTags(repository, tags)
 
 	assert.NotNil(t, err, "should return error if json unmarshal got wrong")
 }
@@ -155,15 +155,47 @@ func TestShouldReturnNilWhenDeletedUnusedTagsWorks(t *testing.T) {
 		return bytes, nil
 	}
 
-	UnmarshalFunction = func(bytes []byte, response interface{}) error {
-		return nil
-	}
-
 	DeleteUnusedTags = func(tag string, repository string) {
 
 	}
 
-	err := getTags(repository, tags)
+	err := GetTags(repository, tags)
 
 	assert.Nil(t, err, "should return nil when got fine")
 }
+
+func TestShouldReturnNilWhenCleanRegistryRan(t *testing.T) {
+	repository = "demo"
+	tags := []string{
+		"demo-1",
+		"demo-2",
+	}
+
+	oldGetTags := GetTags
+	defer func() {
+		GetTags = oldGetTags
+	}()
+
+	GetTags = func(repository string, tags []string) error {
+		return nil
+	}
+	err := CleanRegistry(repository, tags)
+	assert.Nil(t, err, "should return nil when run clean registry got fine")
+}
+
+// func TestShouldReturnLogErrorIfDExecuteCommandFail(t *testing.T) {
+// 	tag := "demo-1"
+// 	repository := "demo"
+
+// 	oldExecuteCommandFunction := ExecuteCommandFunction
+// 	defer func() {
+// 		ExecuteCommandFunction = oldExecuteCommandFunction
+// 	}()
+
+// 	ExecuteCommandFunction = func(params ...string) ([]byte, error) {
+// 		return nil, errors.New("something got wrong executing command")
+// 	}
+
+// 	DeleteUnusedTags(tag, repository)
+// 	assert.Equal(t, "something got wrong executing command", t.Fatal)
+// }
