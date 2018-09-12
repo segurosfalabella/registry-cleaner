@@ -30,4 +30,4 @@ script:
   - go vet -v ./...
   - gocyclo -over 5 $(echo $GO_FILES)
   - golint -set_exit_status $(go list ./...)
-  - $HOME/go/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
+  - ${TRAVIS_HOME}/go/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
