@@ -21,11 +21,12 @@ go build .
 ```
 
 Then execute the binary with these flags
+* `-registry="registry-name"`, registry name
 * `-repository="repository-name"`, repository name
 * `tag1 tag2 tag3`, add as arguments the tags that you wan to keep or save. The process will prevend deleting these tags
 
 ```
-$ ./registry-cleaner -repository="<repository>" tag1 tag2 tag3
+$ ./registry-cleaner -registry="<registry>" -repository="<repository>" tag1 tag2 tag3
 ```
 
 ### Collaborators
