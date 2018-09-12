@@ -9,17 +9,26 @@ import (
 	"strings"
 )
 
+//Registry var
+var Registry string
+
 func main() {
 	var repository string
+	var registry string
 	flag.StringVar(&repository, "repository", "", "The Azure Cloud Registry repository")
+	flag.StringVar(&registry, "registry", "", "The Azure Cloud Registry Name")
 	flag.Parse()
 	args := flag.Args()
-	CleanRegistry(repository, args)
+	CleanRegistry(registry, repository, args)
 }
 
 //CleanRegistry function
-func CleanRegistry(repository string, tags []string) error {
+func CleanRegistry(registry string, repository string, tags []string) error {
 	log.Println("clean registry")
+
+	if registry == "" {
+		return errors.New("Registry is needed")
+	}
 
 	if repository == "" {
 		return errors.New("Repository is needed")
@@ -30,6 +39,7 @@ func CleanRegistry(repository string, tags []string) error {
 	}
 
 	log.Println("call get tags")
+	Registry = registry
 	err := GetTags(repository, tags)
 
 	if err != nil {
@@ -48,7 +58,7 @@ var GetTags = func(repository string, tags []string) error {
 		"repository",
 		"show-tags",
 		"-n",
-		"segurosfalabella",
+		Registry,
 		"--repository",
 		repository)
 
@@ -83,7 +93,7 @@ var DeleteUnusedTags = func(tag string, repository string) {
 			"repository",
 			"delete",
 			"-n",
-			"segurosfalabella",
+			Registry,
 			"--image",
 			repository+":"+tag,
 			"--yes")

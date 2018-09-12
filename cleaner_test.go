@@ -10,21 +10,65 @@ import (
 
 var repository string
 var tags []string
+var registry string
 
+func TestShouldReturnErrorIfDoesNotHaveARegistry(t *testing.T) {
+	repository = "demo"
+	registry = ""
+	tags = []string{
+		"demo1",
+		"demo2",
+	}
+	oldGetTags := GetTags
+	defer func() {
+		GetTags = oldGetTags
+	}()
+
+	GetTags = func(repository string, tags []string) error {
+		return nil
+	}
+
+	err := CleanRegistry(registry, repository, tags)
+
+	assert.NotNil(t, err)
+}
 func TestShoulReturnErrorIfDoesNotdHaveARepo(t *testing.T) {
 	repository = ""
-	tags = []string{}
+	registry = "demo"
+	tags = []string{
+		"demo1",
+		"demo2",
+	}
 
-	err := CleanRegistry(repository, tags)
+	oldGetTags := GetTags
+	defer func() {
+		GetTags = oldGetTags
+	}()
+
+	GetTags = func(repository string, tags []string) error {
+		return nil
+	}
+
+	err := CleanRegistry(registry, repository, tags)
 
 	assert.NotNil(t, err)
 }
 
 func TestShouldReturnErrorIfDoesNotHaveTagsAsArguments(t *testing.T) {
 	repository = "repo"
+	registry = "demo"
 	tags = []string{}
 
-	err := CleanRegistry(repository, tags)
+	oldGetTags := GetTags
+	defer func() {
+		GetTags = oldGetTags
+	}()
+
+	GetTags = func(repository string, tags []string) error {
+		return nil
+	}
+
+	err := CleanRegistry(registry, repository, tags)
 
 	assert.NotNil(t, err)
 }
@@ -164,6 +208,7 @@ func TestShouldReturnNilWhenDeletedUnusedTagsWorks(t *testing.T) {
 
 func TestShouldReturnNilWhenCleanRegistryRan(t *testing.T) {
 	repository = "demo"
+	registry = "registry-demo"
 	tags := []string{
 		"demo-1",
 		"demo-2",
@@ -177,7 +222,7 @@ func TestShouldReturnNilWhenCleanRegistryRan(t *testing.T) {
 	GetTags = func(repository string, tags []string) error {
 		return nil
 	}
-	err := CleanRegistry(repository, tags)
+	err := CleanRegistry(registry, repository, tags)
 	assert.Nil(t, err, "should return nil when run clean registry got fine")
 }
 
