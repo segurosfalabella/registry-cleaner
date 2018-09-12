@@ -1,5 +1,6 @@
 
 ## Registry Cleaner
+[![Build Status](https://www.travis-ci.org/segurosfalabella/registry-cleaner.svg?branch=master)](https://www.travis-ci.org/segurosfalabella/registry-cleaner) [![Coverage Status](https://coveralls.io/repos/github/segurosfalabella/registry-cleaner/badge.svg?branch=master)](https://coveralls.io/github/segurosfalabella/registry-cleaner?branch=master)
 
 Tool to delete unused tags in azure container registry.
 

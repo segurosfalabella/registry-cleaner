@@ -19,11 +19,15 @@ before_script:
   - GO_FILES=$(find . -iname '*.go' -type f | grep -v /godogs/ | tr "\n" " ")
   - go get github.com/golang/lint/golint
   - go get github.com/fzipp/gocyclo
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/mattn/goveralls
 
 script:
   - test -z $(gofmt -s -l $GO_FILES)
   - go test -v -race ./...
   - go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+  - go test -v -covermode=count -coverprofile=coverage.out
   - go vet -v ./...
   - gocyclo -over 5 $(echo $GO_FILES)
   - golint -set_exit_status $(go list ./...)
+  - $HOME/go/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
