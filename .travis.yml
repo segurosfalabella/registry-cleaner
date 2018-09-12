@@ -1,0 +1,29 @@
+language: go
+
+services:
+  - docker
+
+go:
+  - 1.10.1
+
+matrix:
+  allow_failures:
+    - go: master
+  fast_finish: true
+
+notifications:
+  email: false
+
+before_script:
+  - go get -t ./...
+  - GO_FILES=$(find . -iname '*.go' -type f | grep -v /godogs/ | tr "\n" " ")
+  - go get github.com/golang/lint/golint
+  - go get github.com/fzipp/gocyclo
+
+script:
+  - test -z $(gofmt -s -l $GO_FILES)
+  - go test -v -race ./...
+  - go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+  - go vet -v ./...
+  - gocyclo -over 4 $(echo $GO_FILES)
+  - golint -set_exit_status $(go list ./...)
