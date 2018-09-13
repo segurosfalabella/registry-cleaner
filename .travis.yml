@@ -31,3 +31,9 @@ script:
   - gocyclo -over 5 $(echo $GO_FILES)
   - golint -set_exit_status $(go list ./...)
   - $(go env GOPATH | awk 'BEGIN{FS=":"} {print $1}')/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
+  - go build ./...
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t $DOCKER_USERNAME/registry-cleaner:t-${TRAVIS_BUILD_NUMBER} .
+  - docker push $DOCKER_USERNAME/registry-cleaner:t-${TRAVIS_BUILD_NUMBER}
