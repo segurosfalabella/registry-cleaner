@@ -35,5 +35,6 @@ script:
 after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - ./build.sh
+  - ls -la
   - docker build -t $DOCKER_USERNAME/registry-cleaner:t-${TRAVIS_BUILD_NUMBER} .
   - docker push $DOCKER_USERNAME/registry-cleaner:t-${TRAVIS_BUILD_NUMBER}
