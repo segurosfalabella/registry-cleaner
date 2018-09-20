@@ -32,7 +32,7 @@ if [ -z $PLUGIN_TAGS ]; then
 fi
 
 az login --service-principal -u ${ARM_CLIENT_ID} -p ${ARM_CLIENT_SECRET} --tenant ${ARM_TENANT_ID}
-ll
+ls -la
 TAGS=$(echo "$PLUGIN_TAGS" | sed 's/,/ /g')
 echo "Registry: $PLUGIN_REGISTRY"
 echo "Repository: $PLUGIN_REPOSITORY"
