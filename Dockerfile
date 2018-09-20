@@ -1,6 +1,6 @@
 FROM microsoft/azure-cli:2.0.45
 
-COPY registry-cleaner ./
+COPY registry-cleaner /
 ADD /entrypoint.sh /
 RUN ls -la
 
