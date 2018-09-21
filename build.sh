@@ -2,7 +2,7 @@
 
 export CGO_ENABLED=0
 export GOOS=linux
-export GOARCH=arm
+export GOARCH=arm64
 
 go build -a -installsuffix cgo
 ls -la
